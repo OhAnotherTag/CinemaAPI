@@ -14,3 +14,16 @@ tasks:
     dir: Src/CinemaService
     cmds:
       - dotnet run
+  room:
+    dir: Src/RoomService
+    cmds:
+      - dotnet run
+  movie:
+    dir: Src/MovieService
+    cmds:
+      - dotnet run
+  session:
+    dir: Src/SessionService
+    cmds:
+      - dotnet run
+  
