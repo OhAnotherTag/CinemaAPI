@@ -15,11 +15,7 @@
       "launchUrl": "swagger",
       "applicationUrl": "https://localhost:7191;http://localhost:5191",
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development",
-        "CINEMA_SERVICE_ADDR": "https://localhost:7254",
-        "ROOM_SERVICE_ADDR": "https://localhost:7295",
-        "SESSION_SERVICE_ADDR": "https://localhost:7108",
-        "MOVIE_SERVICE_ADDR": "https://localhost:7196"
+        "ASPNETCORE_ENVIRONMENT": "Development"
       }
     },
     "IIS Express": {
