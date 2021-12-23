@@ -1,0 +1,92 @@
+﻿syntax = "proto3";
+
+package session;
+// SESSION SERVICE
+
+service SessionService {
+  rpc GetByIdSession (GetByIdSessionRequest) returns (GetByIdSessionReply) {}
+  rpc GetAllSession (GetAllSessionRequest) returns (GetAllSessionReply) {}
+  rpc CreateSession (CreateSessionRequest) returns (CreateSessionReply) {}
+  rpc UpdateSession (UpdateSessionRequest) returns (UpdateSessionReply) {}
+  rpc DeleteSession (DeleteSessionRequest) returns (DeleteSessionReply) {}
+}
+
+message Session {
+  string movie_id = 1;
+  string room_id = 2;
+  int32 start_time_hour = 3;
+  int32 start_time_minute = 4;
+  int32 end_time_hour = 5;
+  int32 end_time_minute = 6;
+  int32 screening_day = 7;
+  int32 screening_month = 8;
+  int32 screening_year = 9;
+  string session_id = 10;
+}
+
+message GetByIdSessionRequest {
+  string SessionId = 1;
+}
+
+message GetByIdSessionReply {
+  string movie_id = 1;
+  string room_id = 2;
+  int32 start_time_hour = 3;
+  int32 start_time_minute = 4;
+  int32 end_time_hour = 5;
+  int32 end_time_minute = 6;
+  int32 screening_day = 7;
+  int32 screening_month = 8;
+  int32 screening_year = 9;
+  string session_id = 10;
+}
+
+message GetAllSessionRequest {
+  optional int32 page = 2;
+  optional int32 limit = 3;
+}
+
+message GetAllSessionReply {
+  repeated Session sessions = 1;
+}
+
+message CreateSessionRequest {
+  string movie_id = 1;
+  string room_id = 2;
+  int32 start_time_hour = 3;
+  int32 start_time_minute = 4;
+  int32 end_time_hour = 5;
+  int32 end_time_minute = 6;
+  int32 screening_day = 7;
+  int32 screening_month = 8;
+  int32 screening_year = 9;
+}
+
+message CreateSessionReply {
+  string message = 1;
+}
+
+message UpdateSessionRequest {
+  string movie_id = 1;
+  string room_id = 2;
+  int32 start_time_hour = 3;
+  int32 start_time_minute = 4;
+  int32 end_time_hour = 5;
+  int32 end_time_minute = 6;
+  int32 screening_day = 7;
+  int32 screening_month = 8;
+  int32 screening_year = 9;
+  string session_id = 10;
+}
+
+message UpdateSessionReply {
+  string message = 1;
+}
+
+message DeleteSessionRequest {
+  string session_id = 1;
+}
+
+message DeleteSessionReply {
+  string message = 1;
+}

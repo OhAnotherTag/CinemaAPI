@@ -1,0 +1,84 @@
+﻿syntax = "proto3";
+
+// MOVIE SERVICE
+package movie;
+
+service MovieService {
+  rpc GetByIdMovie (GetByIdMovieRequest) returns (GetByIdMovieReply) {}
+  rpc GetAllMovie (GetAllMovieRequest) returns (GetAllMovieReply) {}
+  rpc CreateMovie (CreateMovieRequest) returns (CreateMovieReply) {}
+  rpc UpdateMovie (UpdateMovieRequest) returns (UpdateMovieReply) {}
+  rpc DeleteMovie (DeleteMovieRequest) returns (DeleteMovieReply) {}
+}
+
+message Movie {
+  string movie_id = 1;
+  string title = 2;
+  string plot = 3;
+  string format = 4;
+  int32 release_day = 5;
+  int32 release_month = 6;
+  int32 release_year = 7;
+  int32 runtime = 8;
+}
+
+message GetByIdMovieRequest {
+  string movie_id = 1;
+}
+
+message GetByIdMovieReply {
+  string movie_id = 1;
+  string title = 2;
+  string plot = 3;
+  string format = 4;
+  int32 release_day = 5;
+  int32 release_month = 6;
+  int32 release_year = 7;
+  int32 runtime = 8;
+}
+
+message GetAllMovieRequest {
+  optional int32 page = 2;
+  optional int32 limit = 3;
+}
+
+message GetAllMovieReply {
+  repeated Movie movies = 1;
+}
+
+message CreateMovieRequest {
+  string title = 1;
+  string plot = 2;
+  string format = 3;
+  int32 release_day = 4;
+  int32 release_month = 5;
+  int32 release_year = 6;
+  int32 runtime = 7;
+}
+
+message CreateMovieReply {
+  string message = 1;
+}
+
+message UpdateMovieRequest {
+  string title = 1;
+  string plot = 2;
+  string format = 3;
+  int32 release_day = 4;
+  int32 release_month = 5;
+  int32 release_year = 6;
+  int32 runtime = 7;
+  string movie_id = 8;
+}
+
+message UpdateMovieReply {
+  string message = 1;
+}
+
+message DeleteMovieRequest {
+  string movie_id = 1;
+}
+
+message DeleteMovieReply {
+  string message = 1;
+}

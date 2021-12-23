@@ -1,0 +1,64 @@
+﻿syntax = "proto3";
+
+// CINEMA SERVICE
+package cinema;
+
+service CinemaService {
+  rpc GetByIdCinema (GetByIdCinemaRequest) returns (GetByIdCinemaReply) {}
+  rpc GetAllCinema (GetAllCinemaRequest) returns (GetAllCinemaReply) {}
+  rpc CreateCinema (CreateCinemaRequest) returns (CreateCinemaReply) {}
+  rpc UpdateCinema (UpdateCinemaRequest) returns (UpdateCinemaReply) {}
+  rpc DeleteCinema (DeleteCinemaRequest) returns (DeleteCinemaReply) {}
+}
+
+message Cinema {
+  string cinema_id = 1;
+  string name = 2;
+  string location = 3;
+}
+
+message GetByIdCinemaRequest {
+  string cinema_id = 1;
+}
+
+message GetByIdCinemaReply {
+  string cinema_id = 1;
+  string name = 2;
+  string location = 3;
+}
+
+message GetAllCinemaRequest {
+  int32 page = 1;
+  int32 limit = 2;
+}
+
+message GetAllCinemaReply {
+  repeated Cinema cinemas = 1;
+}
+
+message CreateCinemaRequest {
+  string name = 1;
+  string location = 2;
+}
+
+message CreateCinemaReply {
+  string message = 1;
+}
+
+message UpdateCinemaRequest {
+  string name = 1;
+  string location = 2;
+  string cinema_id = 3;
+}
+
+message UpdateCinemaReply {
+  string message = 1;
+}
+
+message DeleteCinemaRequest {
+  string cinema_id = 1;
+}
+
+message DeleteCinemaReply {
+  string message = 1;
+}

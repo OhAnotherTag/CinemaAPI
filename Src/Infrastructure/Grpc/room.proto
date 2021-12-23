@@ -1,0 +1,71 @@
+﻿syntax = "proto3";
+
+// ROOM SERVICE
+
+package room;
+
+service RoomService {
+  rpc GetByIdRoom (GetByIdRoomRequest) returns (GetByIdRoomReply) {}
+  rpc GetAllRoom (GetAllRoomRequest) returns (GetAllRoomReply) {}
+  rpc CreateRoom (CreateRoomRequest) returns (CreateRoomReply) {}
+  rpc UpdateRoom (UpdateRoomRequest) returns (UpdateRoomReply) {}
+  rpc DeleteRoom (DeleteRoomRequest) returns (DeleteRoomReply) {}
+}
+
+message Room {
+  int32 seats = 1;
+  string cinema_id = 2;
+  string format = 3;
+  string room_id = 4;
+  int32 number = 5;
+}
+
+message GetByIdRoomRequest {
+  string roomId = 1;
+}
+
+message GetByIdRoomReply {
+  int32 seats = 1;
+  string cinema_id = 2;
+  string format = 3;
+  string room_id = 4;
+  int32 number = 5;
+}
+
+message GetAllRoomRequest {
+  string roomId = 1;
+}
+
+message GetAllRoomReply {
+  repeated Room rooms = 1;
+}
+message CreateRoomRequest {
+  int32 seats = 1;
+  string cinema_id = 2;
+  string format = 3;
+  int32 number = 4;
+}
+
+message CreateRoomReply {
+  string message = 1;
+}
+
+message UpdateRoomRequest {
+  int32 seats = 1;
+  string cinema_id = 2;
+  string format = 3;
+  int32 number = 4;
+  string room_id = 5;
+}
+
+message UpdateRoomReply {
+  string message = 1;
+}
+
+message DeleteRoomRequest {
+  string room_id = 1;
+}
+
+message DeleteRoomReply {
+  string message = 1;
+}
