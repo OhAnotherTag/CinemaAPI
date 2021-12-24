@@ -2,6 +2,7 @@
 
 using Microsoft.EntityFrameworkCore;
 using SessionService.Api;
+using SessionService.Messaging.Receiver;
 using SessionService.Model;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -12,7 +13,14 @@ var services = builder.Services;
 var configuration = builder.Configuration;
 // Add services to the container.
 services.AddGrpc();
-services.AddDbContext<SessionContext>(options => options.UseNpgsql(configuration["DatabaseURI"]));
+
+services.AddDbContext<SessionContext>(
+    options => options.UseNpgsql(configuration["DatabaseURI"]),
+    ServiceLifetime.Transient,
+    ServiceLifetime.Transient);
+
+services.AddHostedService<DeleteCascadeRoomReceiver>();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

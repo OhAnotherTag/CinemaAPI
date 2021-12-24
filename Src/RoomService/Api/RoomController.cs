@@ -2,6 +2,7 @@
 using Grpc.Core;
 using Microsoft.EntityFrameworkCore;
 using Room;
+using RoomService.Messaging.Sender;
 using RoomService.Model;
 
 namespace RoomService.Api;
@@ -9,10 +10,12 @@ namespace RoomService.Api;
 public class RoomController : Room.RoomService.RoomServiceBase
 {
     private readonly RoomContext _context;
+    private readonly IDeleteCascadeRoomSender _sender;
 
-    public RoomController(RoomContext context)
+    public RoomController(RoomContext context, IDeleteCascadeRoomSender sender)
     {
         _context = context;
+        _sender = sender;
     }
 
     public override async Task<GetByIdRoomReply> GetByIdRoom(GetByIdRoomRequest request, ServerCallContext context)
@@ -153,6 +156,8 @@ public class RoomController : Room.RoomService.RoomServiceBase
             _context.Rooms.Remove(room);
             
             await _context.SaveChangesAsync(context.CancellationToken);
+            
+            _sender.Send(room.RoomId.ToString());
         }
         catch (Exception e)
         {

@@ -3,16 +3,19 @@ using Cinema;
 using CinemaService.Model;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
+using CinemaService.Messaging.Senders;
 
 namespace CinemaService.Api;
 
 public class CinemaController : Cinema.CinemaService.CinemaServiceBase
 {
     private readonly CinemaContext _context;
+    private readonly IDeleteCascadeCinemaSender _sender;
 
-    public CinemaController(CinemaContext context)
+    public CinemaController(CinemaContext context, IDeleteCascadeCinemaSender sender)
     {
         _context = context;
+        _sender = sender;
     }
 
     public override async Task<GetByIdCinemaReply> GetByIdCinema(GetByIdCinemaRequest request,
@@ -133,6 +136,8 @@ public class CinemaController : Cinema.CinemaService.CinemaServiceBase
             _context.Cinemas.Remove(cinema);
             
             await _context.SaveChangesAsync(context.CancellationToken);
+            
+            _sender.Send(cinema.CinemaId.ToString());
         }
         catch (Exception e)
         {

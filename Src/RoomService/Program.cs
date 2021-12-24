@@ -1,5 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using RoomService.Api;
+using RoomService.Messaging.Receivers;
+using RoomService.Messaging.Sender;
 using RoomService.Model;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -8,7 +10,16 @@ var services = builder.Services;
 var configuration = builder.Configuration;
 // Add services to the container.
 services.AddGrpc();
-services.AddDbContext<RoomContext>(option => option.UseNpgsql(configuration["DatabaseURI"]));
+
+
+services.AddTransient<IDeleteCascadeRoomSender, DeleteCascadeRoomSender>();
+
+services.AddDbContext<RoomContext>(
+    option => option.UseNpgsql(configuration["DatabaseURI"]),
+    ServiceLifetime.Transient,
+    ServiceLifetime.Transient);
+
+services.AddHostedService<DeleteCascadeCinemaReceiver>();
 
 var app = builder.Build();
 

@@ -98,7 +98,7 @@ public class SessionController : ControllerBase
         }
     }
     
-    [HttpPost("sessions")]
+    [HttpPut("cinemas/{cinemaId}/rooms/{roomId}/sessions")]
     public async Task<ActionResult> UpdateCinema(UpdateSessionRequest request)
     {
         var req = new CreateSessionRequest
@@ -123,7 +123,7 @@ public class SessionController : ControllerBase
         return Ok(reply);
     }
 
-    [HttpPost("sessions/{sessionId}")]
+    [HttpDelete("cinemas/{cinemaId}/rooms/{roomId}/sessions/{sessionId}")]
     public async Task<ActionResult> DeleteSession(string sessionId)
     {
         using var channel = GrpcChannel.ForAddress(_sessionAddress);

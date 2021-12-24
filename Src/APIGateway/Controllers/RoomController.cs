@@ -45,7 +45,7 @@ public class RoomController : ControllerBase
         return Ok(reply);
     }
     
-    [HttpPost("rooms")]
+    [HttpPut("cinemas/{cinemaId}/rooms")]
     public async Task<ActionResult> UpdateCinema(UpdateRoomRequest request)
     {
         using var channel = GrpcChannel.ForAddress(_address);
@@ -55,7 +55,7 @@ public class RoomController : ControllerBase
         return Ok(reply);
     }
 
-    [HttpPost("rooms/{roomId}")]
+    [HttpDelete("cinemas/{cinemaId}rooms/{roomId}")]
     public async Task<ActionResult> DeleteRoom(string roomId)
     {
         using var channel = GrpcChannel.ForAddress(_address);

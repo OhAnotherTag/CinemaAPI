@@ -94,10 +94,10 @@ public class SessionController : Session.SessionService.SessionServiceBase
             SELECT *
             FROM session
             WHERE
-                room_id = 'f8f5eb25-d566-4b27-8c16-7cfccda888e2'
-                AND screening_date = '2021-08-06'
-                AND starting_time BETWEEN {0} AND {1}
-                AND ending_time BETWEEN {0} AND {1}
+                room_id = {0}
+                AND screening_date = {1}
+                AND starting_time BETWEEN {2} AND {3}
+                AND ending_time BETWEEN {2} AND {3}
         ";
 
         try
@@ -112,8 +112,11 @@ public class SessionController : Session.SessionService.SessionServiceBase
                     DateOnly.Parse($"{request.ScreeningYear}-{request.ScreeningMonth}-{request.ScreeningDay}"),
             };
 
-            var s = await _context.Sessions.FromSqlRaw(query, session.StartingTime, session.EndingTime)
+            var s = await _context.Sessions.FromSqlRaw(query, session.RoomId, session.ScreeningDate,
+                    session.StartingTime, session.EndingTime)
                 .FirstOrDefaultAsync(context.CancellationToken);
+
+            Console.WriteLine(s?.MovieId);
 
             if (s is not null)
             {
@@ -145,18 +148,18 @@ public class SessionController : Session.SessionService.SessionServiceBase
                 .SingleAsync(c => c.SessionId.ToString() == request.SessionId,
                     context.CancellationToken);
 
-            session.RoomId = request.RoomId is null ?  session.RoomId : Guid.Parse(request.RoomId);
-            
+            session.RoomId = request.RoomId is null ? session.RoomId : Guid.Parse(request.RoomId);
+
             session.MovieId = request.RoomId is null ? session.MovieId : Guid.Parse(request.MovieId);
-            
+
             session.StartingTime = request.RoomId is null
                 ? session.StartingTime
                 : TimeOnly.Parse($"{request.StartTimeHour}:{request.StartTimeMinute}");
-            
+
             session.EndingTime = request.RoomId is null
                 ? session.EndingTime
                 : TimeOnly.Parse($"{request.EndTimeHour}:{request.EndTimeMinute}");
-            
+
             session.ScreeningDate = request.RoomId is not null
                 ? session.ScreeningDate
                 : DateOnly.Parse($"{request.ScreeningYear}-{request.ScreeningMonth}-{request.ScreeningDay}");
