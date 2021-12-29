@@ -1,0 +1,45 @@
+version: '3'
+
+tasks:
+  gateway:
+    dir: Src/APIGateway
+    cmds:
+      - dotnet run
+    env:
+      CINEMA_SERVICE_ADDR: https://localhost:7254
+      ROOM_SERVICE_ADDR: https://localhost:7295
+      SESSION_SERVICE_ADDR: https://localhost:7108
+      MOVIE_SERVICE_ADDR: https://localhost:7196
+
+  cinema:
+    dir: Src/CinemaService
+    cmds:
+      - dotnet run
+    env:
+      MQ_HOST: localhost
+      MQ_USERNAME: guest
+      MQ_PASSWORD: guest
+
+  room:
+    dir: Src/RoomService
+    cmds:
+      - dotnet run
+    env:
+      MQ_HOST: localhost
+      MQ_USERNAME: guest
+      MQ_PASSWORD: guest
+
+  movie:
+    dir: Src/MovieService
+    cmds:
+      - dotnet run
+
+  session:
+    dir: Src/SessionService
+    cmds:
+      - dotnet run
+    env:
+      MQ_HOST: localhost
+      MQ_USERNAME: guest
+      MQ_PASSWORD: guest
+  

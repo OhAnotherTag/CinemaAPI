@@ -1,0 +1,35 @@
+version: '3'
+
+tasks:
+
+  micro:
+    - task: gateway
+    - task: cinema
+    - task: room
+    - task: movie
+    - task: session
+
+  gateway:
+    dir: Src/APIGateway
+    cmds:
+      - dotnet publish -c Release
+
+  cinema:
+    dir: Src/CinemaService
+    cmds:
+      - dotnet publish -c Release
+
+  room:
+    dir: Src/RoomService
+    cmds:
+      - dotnet publish -c Release
+
+  movie:
+    dir: Src/movieService
+    cmds:
+      - dotnet publish -c Release
+
+  session:
+    dir: Src/SessionService
+    cmds:
+      - dotnet publish -c Release
