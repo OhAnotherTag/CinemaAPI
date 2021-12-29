@@ -7,15 +7,14 @@ using RoomService.Model;
 var builder = WebApplication.CreateBuilder(args);
 
 var services = builder.Services;
-var configuration = builder.Configuration;
-// Add services to the container.
+var dbUri = Environment.GetEnvironmentVariable("DB_URI") ?? throw new ArgumentException("DB_URI cannot be null");// Add services to the container.
 services.AddGrpc();
 
 
 services.AddTransient<IDeleteCascadeRoomSender, DeleteCascadeRoomSender>();
 
 services.AddDbContext<RoomContext>(
-    option => option.UseNpgsql(configuration["DatabaseURI"]),
+    option => option.UseNpgsql(dbUri),
     ServiceLifetime.Transient,
     ServiceLifetime.Transient);
 

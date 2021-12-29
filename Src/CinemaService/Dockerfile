@@ -1,20 +1,5 @@
-﻿FROM mcr.microsoft.com/dotnet/aspnet:6.0 AS base
-WORKDIR /app
-EXPOSE 80
-EXPOSE 443
+﻿FROM mcr.microsoft.com/dotnet/aspnet:6.0
 
-FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
-WORKDIR /src
-COPY ["CinemaService/CinemaService.csproj", "CinemaService/"]
-RUN dotnet restore "CinemaService/CinemaService.csproj"
-COPY . .
-WORKDIR "/src/CinemaService"
-RUN dotnet build "CinemaService.csproj" -c Release -o /app/build
-
-FROM build AS publish
-RUN dotnet publish "CinemaService.csproj" -c Release -o /app/publish
-
-FROM base AS final
-WORKDIR /app
-COPY --from=publish /app/publish .
+COPY bin/Release/net6.0/publish App/
+WORKDIR /App
 ENTRYPOINT ["dotnet", "CinemaService.dll"]

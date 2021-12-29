@@ -1,0 +1,45 @@
+version: '3'
+
+tasks:
+
+  micro:
+    - task: gateway
+    - task: cinema
+    - task: room
+    - task: movie
+    - task: session
+
+  gateway:
+    dir: Src/APIGateway
+    cmds:
+      - docker build -t api-gateway:local .
+      - docker image tag api-gateway:local localhost:5000/api-gateway:local
+      - docker image push localhost:5000/api-gateway:local
+
+  cinema:
+    dir: Src/CinemaService
+    cmds:
+      - docker build -t cinema:local .
+      - docker image tag cinema:local localhost:5000/cinema:local
+      - docker image push localhost:5000/cinema:local
+
+  room:
+    dir: Src/RoomService
+    cmds:
+      - docker build -t room:local .
+      - docker image tag room:local localhost:5000/room:local
+      - docker image push localhost:5000/room:local
+
+  movie:
+    dir: Src/movieService
+    cmds:
+      - docker build -t movie:local .
+      - docker image tag movie:local localhost:5000/movie:local
+      - docker image push localhost:5000/movie:local
+
+  session:
+    dir: Src/SessionService
+    cmds:
+      - docker build -t session:local .
+      - docker image tag session:local localhost:5000/session:local
+      - docker image push localhost:5000/session:local

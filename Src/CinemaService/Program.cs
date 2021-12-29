@@ -7,10 +7,11 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 var services = builder.Services;
-var configuration = builder.Configuration;
+
+var dbUri = Environment.GetEnvironmentVariable("DB_URI") ?? throw new ArgumentException("DB_URI cannot be null"); 
 
 services.AddGrpc();
-services.AddDbContext<CinemaContext>(options => options.UseNpgsql(configuration["DatabaseURI"]));
+services.AddDbContext<CinemaContext>(options => options.UseNpgsql(dbUri));
 
 services.AddSingleton<IDeleteCascadeCinemaSender, DeleteCascadeCinemaSender>();
 
