@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using Domain;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Npgsql;
 
 namespace SessionService.Model
 {
@@ -11,6 +13,8 @@ namespace SessionService.Model
         {
         }
 
+        static SessionContext() => NpgsqlConnection.GlobalTypeMapper.MapEnum<Format>();
+        
         public SessionContext(DbContextOptions<SessionContext> options)
             : base(options)
         {
@@ -24,7 +28,7 @@ namespace SessionService.Model
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.HasPostgresExtension("uuid-ossp");
+            modelBuilder.HasPostgresEnum<Format>().HasPostgresExtension("uuid-ossp");
 
             modelBuilder.Entity<SessionModel>(entity =>
             {
@@ -45,14 +49,35 @@ namespace SessionService.Model
                 entity.Property(e => e.RoomId)
                     .HasColumnName("room_id")
                     .IsRequired();
+                
+                entity.Property(e => e.CinemaId)
+                    .HasColumnName("cinema_id")
+                    .IsRequired();
+                
+                entity.Property(e => e.MovieFormat)
+                    .HasColumnName("movie_format")
+                    .IsRequired();
+                
+                entity.Property(e => e.MovieRuntime)
+                    .HasColumnName("movie_runtime")
+                    .IsRequired();
+                
+                entity.Property(e => e.RoomFormat)
+                    .HasColumnName("room_format")
+                    .IsRequired();
 
                 entity.Property(e => e.ScreeningDate)
                     .HasColumnName("screening_date")
                     .IsRequired();
+                
+                entity.Property(e => e.MovieReleaseDate)
+                    .HasColumnName("movie_release_date")
+                    .IsRequired();
 
                 entity.Property(e => e.SessionId)
                     .HasColumnName("session_id")
-                    .HasDefaultValueSql("uuid_generate_v4()").IsRequired();
+                    .HasDefaultValueSql("uuid_generate_v4()")
+                    .IsRequired();
 
                 entity.Property(e => e.StartingTime)
                     .HasColumnName("starting_time")

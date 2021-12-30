@@ -14,14 +14,15 @@ service SessionService {
 message Session {
   string movie_id = 1;
   string room_id = 2;
-  int32 start_time_hour = 3;
-  int32 start_time_minute = 4;
-  int32 end_time_hour = 5;
-  int32 end_time_minute = 6;
-  int32 screening_day = 7;
-  int32 screening_month = 8;
-  int32 screening_year = 9;
-  string session_id = 10;
+  string start_time = 3;
+  string end_time = 4;
+  string screening_date = 5;
+  string session_id = 6;
+  string cinema_id = 7;
+  string movie_format = 8;
+  string room_format = 9;
+  string movie_release_date = 10;
+  int32 movie_runtime = 11;
 }
 
 message GetByIdSessionRequest {
@@ -31,14 +32,15 @@ message GetByIdSessionRequest {
 message GetByIdSessionReply {
   string movie_id = 1;
   string room_id = 2;
-  int32 start_time_hour = 3;
-  int32 start_time_minute = 4;
-  int32 end_time_hour = 5;
-  int32 end_time_minute = 6;
-  int32 screening_day = 7;
-  int32 screening_month = 8;
-  int32 screening_year = 9;
-  string session_id = 10;
+  string start_time = 3;
+  string end_time = 4;
+  string screening_date = 5;
+  string session_id = 6;
+  string cinema_id = 7;
+  string movie_format = 8;
+  string room_format = 9;
+  string movie_release_date = 10;
+  int32 movie_runtime = 11;
 }
 
 message GetAllSessionRequest {
@@ -53,13 +55,14 @@ message GetAllSessionReply {
 message CreateSessionRequest {
   string movie_id = 1;
   string room_id = 2;
-  int32 start_time_hour = 3;
-  int32 start_time_minute = 4;
-  int32 end_time_hour = 5;
-  int32 end_time_minute = 6;
-  int32 screening_day = 7;
-  int32 screening_month = 8;
-  int32 screening_year = 9;
+  string start_time = 3;
+  string end_time = 4;
+  string screening_date = 5;
+  string cinema_id = 6;
+  string movie_format = 7;
+  string room_format = 8;
+  string movie_release_date = 9;
+  int32 movie_runtime = 10;
 }
 
 message CreateSessionReply {
@@ -69,14 +72,15 @@ message CreateSessionReply {
 message UpdateSessionRequest {
   string movie_id = 1;
   string room_id = 2;
-  int32 start_time_hour = 3;
-  int32 start_time_minute = 4;
-  int32 end_time_hour = 5;
-  int32 end_time_minute = 6;
-  int32 screening_day = 7;
-  int32 screening_month = 8;
-  int32 screening_year = 9;
-  string session_id = 10;
+  string start_time = 3;
+  string end_time = 4;
+  string screening_date = 5;
+  string session_id = 6;
+  string cinema_id = 7;
+  string movie_format = 8;
+  string room_format = 9;
+  string movie_release_date = 10;
+  int32 movie_runtime = 11;
 }
 
 message UpdateSessionReply {

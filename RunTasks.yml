@@ -16,6 +16,7 @@ tasks:
     cmds:
       - dotnet run
     env:
+      DB_URI: Host=localhost;Database=cinema;Username=postgres;Password=password
       MQ_HOST: localhost
       MQ_USERNAME: guest
       MQ_PASSWORD: guest
@@ -25,6 +26,7 @@ tasks:
     cmds:
       - dotnet run
     env:
+      DB_URI: Host=localhost;Database=room;Username=postgres;Password=password
       MQ_HOST: localhost
       MQ_USERNAME: guest
       MQ_PASSWORD: guest
@@ -33,12 +35,15 @@ tasks:
     dir: Src/MovieService
     cmds:
       - dotnet run
+    env:
+      DB_URI: Host=localhost;Database=movie;Username=postgres;Password=password
 
   session:
     dir: Src/SessionService
     cmds:
       - dotnet run
     env:
+      DB_URI: Host=localhost;Database=session;Username=postgres;Password=password
       MQ_HOST: localhost
       MQ_USERNAME: guest
       MQ_PASSWORD: guest

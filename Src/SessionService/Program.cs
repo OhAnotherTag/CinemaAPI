@@ -1,7 +1,9 @@
 // using SessionService.Services;
 
+using MassTransit;
 using Microsoft.EntityFrameworkCore;
 using SessionService.Api;
+using SessionService.Messaging.Consumers;
 using SessionService.Messaging.Receiver;
 using SessionService.Model;
 
@@ -19,7 +21,19 @@ services.AddDbContext<SessionContext>(
     ServiceLifetime.Transient,
     ServiceLifetime.Transient);
 
-services.AddHostedService<DeleteCascadeRoomReceiver>();
+services.AddMassTransit(config =>
+{
+    config.AddConsumer<DeleteCinemaCascadeConsumer>();
+    config.UsingRabbitMq((context, cfg) =>
+    {
+        cfg.ReceiveEndpoint("session-service", e =>
+        {
+            e.ConfigureConsumer<DeleteCinemaCascadeConsumer>(context);
+        });
+    });
+});
+
+services.AddMassTransitHostedService();
 
 var app = builder.Build();
 

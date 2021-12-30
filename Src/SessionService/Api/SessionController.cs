@@ -1,4 +1,5 @@
-﻿using Grpc.Core;
+﻿using Domain;
+using Grpc.Core;
 using Microsoft.EntityFrameworkCore;
 using Session;
 using SessionService.Model;
@@ -30,13 +31,9 @@ public class SessionController : Session.SessionService.SessionServiceBase
                 SessionId = session.SessionId.ToString(),
                 RoomId = session.RoomId.ToString(),
                 MovieId = session.MovieId.ToString(),
-                StartTimeHour = session.StartingTime.Hour,
-                StartTimeMinute = session.StartingTime.Minute,
-                EndTimeHour = session.EndingTime.Hour,
-                EndTimeMinute = session.EndingTime.Minute,
-                ScreeningDay = session.ScreeningDate.Day,
-                ScreeningMonth = session.ScreeningDate.Month,
-                ScreeningYear = session.ScreeningDate.Year,
+                StartTime = session.StartingTime.ToString(),
+                EndTime = session.EndingTime.ToString(),
+                ScreeningDate = session.ScreeningDate.ToString()
             });
         }
         catch (Exception e)
@@ -66,13 +63,9 @@ public class SessionController : Session.SessionService.SessionServiceBase
                     SessionId = session.SessionId.ToString(),
                     RoomId = session.RoomId.ToString(),
                     MovieId = session.MovieId.ToString(),
-                    StartTimeHour = session.StartingTime.Hour,
-                    StartTimeMinute = session.StartingTime.Minute,
-                    EndTimeHour = session.EndingTime.Hour,
-                    EndTimeMinute = session.EndingTime.Minute,
-                    ScreeningDay = session.ScreeningDate.Day,
-                    ScreeningMonth = session.ScreeningDate.Month,
-                    ScreeningYear = session.ScreeningDate.Year,
+                    StartTime = session.StartingTime.ToString(),
+                    EndTime = session.EndingTime.ToString(),
+                    ScreeningDate = session.ScreeningDate.ToString()
                 });
             }
         }
@@ -106,17 +99,31 @@ public class SessionController : Session.SessionService.SessionServiceBase
             {
                 RoomId = Guid.Parse(request.RoomId),
                 MovieId = Guid.Parse(request.MovieId),
-                StartingTime = TimeOnly.Parse($"{request.StartTimeHour}:{request.StartTimeMinute}"),
-                EndingTime = TimeOnly.Parse($"{request.EndTimeHour}:{request.EndTimeMinute}"),
-                ScreeningDate =
-                    DateOnly.Parse($"{request.ScreeningYear}-{request.ScreeningMonth}-{request.ScreeningDay}"),
+                CinemaId = Guid.Parse(request.CinemaId),
+                StartingTime = TimeOnly.Parse(request.StartTime),
+                EndingTime = TimeOnly.Parse(request.EndTime),
+                ScreeningDate = DateOnly.Parse(request.ScreeningDate),
+                MovieReleaseDate = DateOnly.Parse(request.MovieReleaseDate),
+                MovieRuntime = request.MovieRuntime,
+                MovieFormat = request.MovieFormat switch
+                {
+                    "classic" => Format.Classic,
+                    "imax" => Format.Imax,
+                    _ => throw new ArgumentException("movie format not supported")
+                },
+                RoomFormat = request.RoomFormat switch
+                {
+                    "classic" => Format.Classic,
+                    "imax" => Format.Imax,
+                    _ => throw new ArgumentException("movie format not supported")
+                },
             };
+
+            ValidateSession(session);
 
             var s = await _context.Sessions.FromSqlRaw(query, session.RoomId, session.ScreeningDate,
                     session.StartingTime, session.EndingTime)
                 .FirstOrDefaultAsync(context.CancellationToken);
-
-            Console.WriteLine(s?.MovieId);
 
             if (s is not null)
             {
@@ -150,19 +157,49 @@ public class SessionController : Session.SessionService.SessionServiceBase
 
             session.RoomId = request.RoomId is null ? session.RoomId : Guid.Parse(request.RoomId);
 
-            session.MovieId = request.RoomId is null ? session.MovieId : Guid.Parse(request.MovieId);
+            session.MovieId = request.MovieId is null ? session.MovieId : Guid.Parse(request.MovieId);
 
-            session.StartingTime = request.RoomId is null
+            session.StartingTime = request.StartTime is null
                 ? session.StartingTime
-                : TimeOnly.Parse($"{request.StartTimeHour}:{request.StartTimeMinute}");
+                : TimeOnly.Parse(request.StartTime);
 
-            session.EndingTime = request.RoomId is null
+            session.EndingTime = request.EndTime is null
                 ? session.EndingTime
-                : TimeOnly.Parse($"{request.EndTimeHour}:{request.EndTimeMinute}");
+                : TimeOnly.Parse(request.EndTime);
 
-            session.ScreeningDate = request.RoomId is not null
+            session.ScreeningDate = request.ScreeningDate is null
                 ? session.ScreeningDate
-                : DateOnly.Parse($"{request.ScreeningYear}-{request.ScreeningMonth}-{request.ScreeningDay}");
+                : DateOnly.Parse(request.ScreeningDate);
+
+            session.MovieReleaseDate = request.MovieReleaseDate is null
+                ? session.ScreeningDate
+                : DateOnly.Parse(request.MovieReleaseDate);
+
+            session.MovieRuntime = request.MovieRuntime > 0
+                ? session.MovieRuntime
+                : request.MovieRuntime;
+
+            session.MovieFormat = request.MovieFormat is null
+                ? session.MovieFormat
+                : request.MovieFormat switch
+                {
+                    "classic" => Format.Classic,
+                    "imax" => Format.Imax,
+                    _ => throw new ArgumentException("movie format not supported")
+                };
+
+            session.RoomFormat = request.RoomFormat is null
+                ? session.RoomFormat
+                : request.RoomFormat switch
+                {
+                    "classic" => Format.Classic,
+                    "imax" => Format.Imax,
+                    _ => throw new ArgumentException("movie format not supported")
+                };
+
+            ValidateSession(session);
+
+            await _context.SaveChangesAsync(context.CancellationToken);
         }
         catch (Exception e)
         {
@@ -197,5 +234,25 @@ public class SessionController : Session.SessionService.SessionServiceBase
         }
 
         return await Task.FromResult(new DeleteSessionReply {Message = "session was delete"});
+    }
+
+    private void ValidateSession(SessionModel session)
+    {
+        if (session.MovieFormat != session.RoomFormat)
+        {
+            throw new ArgumentException("movie format does not match session's room format");
+        }
+
+        if (session.MovieReleaseDate.CompareTo(session.ScreeningDate) > 0)
+        {
+            throw new ArgumentException("session screening date must be equal or greater than movie's release date");
+        }
+
+        var validRuntime = session.StartingTime.AddMinutes(session.MovieRuntime);
+
+        if (session.EndingTime.CompareTo(validRuntime) != 0)
+        {
+            throw new ArgumentException("session's end time must be equal start time + movie runtime");
+        }
     }
 }

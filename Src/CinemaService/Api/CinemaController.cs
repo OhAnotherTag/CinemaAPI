@@ -4,15 +4,17 @@ using CinemaService.Model;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using CinemaService.Messaging.Senders;
+using Domain.Contracts;
+using Domain.Interfaces;
 
 namespace CinemaService.Api;
 
 public class CinemaController : Cinema.CinemaService.CinemaServiceBase
 {
     private readonly CinemaContext _context;
-    private readonly IDeleteCascadeCinemaSender _sender;
+    private readonly ISender<CinemaDeleted> _sender;
 
-    public CinemaController(CinemaContext context, IDeleteCascadeCinemaSender sender)
+    public CinemaController(CinemaContext context, ISender<CinemaDeleted> sender)
     {
         _context = context;
         _sender = sender;
@@ -111,7 +113,7 @@ public class CinemaController : Cinema.CinemaService.CinemaServiceBase
 
             cinema.Location = request.Location ?? cinema.Location;
             cinema.Name = request.Name ?? cinema.Name;
-            
+
             await _context.SaveChangesAsync(context.CancellationToken);
         }
         catch (Exception e)
@@ -131,13 +133,16 @@ public class CinemaController : Cinema.CinemaService.CinemaServiceBase
         {
             var cinema = await _context.Cinemas
                 .SingleAsync(c => c.CinemaId.ToString() == request.CinemaId,
-                context.CancellationToken);
+                    context.CancellationToken);
             
             _context.Cinemas.Remove(cinema);
             
             await _context.SaveChangesAsync(context.CancellationToken);
-            
-            _sender.Send(cinema.CinemaId.ToString());
+
+            await _sender.Send(new CinemaDeleted
+            {
+                CinemaId = request.CinemaId
+            }, context.CancellationToken);
         }
         catch (Exception e)
         {
