@@ -1,0 +1,52 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cinema
+  labels:
+    app: cinema
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: cinema
+  template:
+    metadata:
+      labels:
+        app: cinema
+    spec:
+      containers:
+      - name: cinema
+        image: local:5000/cinema:local
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 80
+        env:
+          - name: DB_URI
+            value: Host=postgres;Database=cinema;Username=postgres;Password=password
+          - name: MQ_HOST
+            value: rabbitmq
+          - name: MQ_USERNAME
+            valueFrom:
+              secretKeyRef:
+                name: rabbitmq-default-user
+                key: username
+          - name: MQ_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: rabbitmq-default-user
+                key: password
+
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: cinema
+spec:
+  selector:
+    app: cinema
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80

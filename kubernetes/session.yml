@@ -1,0 +1,51 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: session
+  labels:
+    app: session
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: session
+  template:
+    metadata:
+      labels:
+        app: session
+    spec:
+      containers:
+      - name: session
+        image: local:5000/session:local
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 80
+        env:
+          - name: DB_URI
+            value: Host=postgres;Database=session;Username=postgres;Password=password
+          - name: MQ_HOST
+            value: rabbitmq
+          - name: MQ_USERNAME
+            valueFrom:
+              secretKeyRef:
+                name: rabbitmq-default-user
+                key: username
+          - name: MQ_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: rabbitmq-default-user
+                key: password
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: session
+spec:
+  selector:
+    app: session
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80

@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: movie
+  labels:
+    app: movie
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: movie
+  template:
+    metadata:
+      labels:
+        app: movie
+    spec:
+      containers:
+      - name: movie
+        image: local:5000/movie:local
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 80
+        env:
+          - name: DB_URI
+            value: Host=postgres;Database=movie;Username=postgres;Password=password
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: movie
+spec:
+  selector:
+    app: movie
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80
