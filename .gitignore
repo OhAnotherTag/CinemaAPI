@@ -1,7 +1,5 @@
-# JetBrains Rider
-
-# Common IntelliJ Platform excludes
-
+# Kubernetes
+postgres.yml
 # User specific
 **/.idea
 **/.idea/**/workspace.xml
