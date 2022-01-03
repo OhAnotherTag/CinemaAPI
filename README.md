@@ -22,4 +22,7 @@ The Kubernetes Ingress Controller chosen for this architecture is Traefik - a fe
 
 - Alternatively, the api gateway can be made into a GraphQL API.
 
-- The Architecture can be improved futher by adding Service discovery mechanisms (e.g. Istio), log collection and observability/metrics. 
+- The Architecture can be improved futher by adding Service discovery mechanisms (e.g. Istio), log collection and observability/metrics.
+
+- A better test coverage for each microservice will be added in the future.
+- The CI/CD pipeline can be improved futher. (probably after the better test coverage)
